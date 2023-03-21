@@ -20,8 +20,10 @@ class AuthorController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|alpha',
+            'name' => 'required',
             'email' => 'required|email|unique:authors',
+            'github' => 'required',
+            'twitter' => 'required',
             'location' => 'required|alpha',
             'latest_article_published' => 'required'
         ]);
