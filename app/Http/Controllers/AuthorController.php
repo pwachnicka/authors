@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Author;
+use App\Models\Author;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -24,7 +24,7 @@ class AuthorController extends Controller
             'email' => 'required|email|unique:authors',
             'github' => 'required',
             'twitter' => 'required',
-            'location' => 'required|alpha',
+            'location' => 'required',
             'latest_article_published' => 'required'
         ]);
 
@@ -43,6 +43,6 @@ class AuthorController extends Controller
     public function delete(int $id)
     {
         Author::findOrFail($id)->delete();
-        return response('Delete succesfully', 200);
+        return response()->json(['message' => 'Delete succesfully'], 200);
     }
 }
