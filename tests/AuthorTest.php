@@ -2,13 +2,16 @@
 
 use App\Models\Author;
 use Tests\TestCase;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class AuthorTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * /api/authors [GET]
      */
-    public function testShouldReturnAllAuthors()
+    public function testShouldReturnAllAuthors(): void
     {
         $this->get("/api/authors", []);
         $this->seeStatusCode(200);
@@ -30,7 +33,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [GET]
      */
-    public function testShouldReturnAuthor()
+    public function testShouldReturnAuthor(): void
     {
         $this->get("/api/authors/2", []);
         $this->seeStatusCode(200);
@@ -50,7 +53,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors [POST]
      */
-    public function testShouldCreateAuthor()
+    public function testShouldCreateAuthor(): void
     {
         $this->post("/api/authors", Author::factory()->definition(), []);
         $this->seeStatusCode(201);
@@ -70,7 +73,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [PUT]
      */
-    public function testShouldUpdateAuthor()
+    public function testShouldUpdateAuthor(): void
     {
         $parameters = [
             'latest_article_published' => 'Testing PUT method with feature test'
@@ -94,7 +97,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [DELETE]
      */
-    public function testShouldDeleteAuthor()
+    public function testShouldDeleteAuthor(): void
     {
         $this->delete('api/authors/11', [], []);
         $this->seeStatusCode(200);
