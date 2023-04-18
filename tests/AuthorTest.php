@@ -3,6 +3,7 @@
 use App\Models\Author;
 use Tests\TestCase;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Illuminate\Testing\TestResponse;
 
 class AuthorTest extends TestCase
 {
@@ -27,6 +28,7 @@ class AuthorTest extends TestCase
         Author::factory()->createRandomAuthor(14);
         Author::factory()->createRandomAuthor(15);
     }
+    //z czasem zamiast setUp używać dataSeeder
 
     /**
      * /api/authors [GET]
@@ -51,6 +53,16 @@ class AuthorTest extends TestCase
     }
 
     /**
+     * /api/authors [GET]
+     */
+    public function testShouldReturn15Authors(): void
+    {
+        $this->get('api/authors', []);
+        // $this->assertJsonCount();
+        // $this->assertJsonCount(15, $key = null);
+    }
+
+    /**
      * /api/authors/id [GET]
      */
     public function testShouldReturnAuthor(): void
@@ -68,6 +80,16 @@ class AuthorTest extends TestCase
             'created_at',
             'updated_at',
         ]);
+    }
+
+    /**
+     * /api/authors/id [GET]
+     */
+    public function testShouldNotReturnAuthor(): void
+    {
+        $this->get("/api/authors/9999", []);
+        $this->seeStatusCode(404);
+        $this->seeJsonEquals(['error' => 'Author not found!']);
     }
 
     /**

@@ -14,6 +14,11 @@ class AuthorController extends Controller
 
     public function showOneAuthor(int $id)
     {
+        $author = Author::find($id);
+
+        if ($author === null) {
+            return response()->json(['error' => 'Author not found!'], 404);
+        }
         return response()->json(Author::find($id));
     }
 
