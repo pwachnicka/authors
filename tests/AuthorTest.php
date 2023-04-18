@@ -8,6 +8,26 @@ class AuthorTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Author::factory()->createRandomAuthor(1);
+        Author::factory()->createRandomAuthor(2);
+        Author::factory()->createRandomAuthor(3);
+        Author::factory()->createRandomAuthor(4);
+        Author::factory()->createRandomAuthor(5);
+        Author::factory()->createRandomAuthor(6);
+        Author::factory()->createRandomAuthor(7);
+        Author::factory()->createRandomAuthor(8);
+        Author::factory()->createRandomAuthor(9);
+        Author::factory()->createRandomAuthor(10);
+        Author::factory()->createRandomAuthor(11);
+        Author::factory()->createRandomAuthor(12);
+        Author::factory()->createRandomAuthor(13);
+        Author::factory()->createRandomAuthor(14);
+        Author::factory()->createRandomAuthor(15);
+    }
+
     /**
      * /api/authors [GET]
      */

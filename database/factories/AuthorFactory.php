@@ -30,4 +30,9 @@ class AuthorFactory extends Factory
             'latest_article_published' => $this->faker->realText($maxNbChars = 20, $indexSize = 2)
         ];
     }
+
+    public function createRandomAuthor(int $id)
+    {
+        $this->createOne(array_merge(['id' => $id], $this->definition()));
+    }
 }
