@@ -25,12 +25,12 @@ class AuthorController extends Controller
     public function create(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:authors',
-            'github' => 'required',
-            'twitter' => 'required',
-            'location' => 'required',
-            'latest_article_published' => 'required'
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:authors|max:255',
+            'github' => 'required|max:255',
+            'twitter' => 'required|max:255',
+            'location' => 'required|max:255',
+            'latest_article_published' => 'required|max:255'
         ]);
 
         $author = Author::create($request->all());
