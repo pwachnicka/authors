@@ -1,13 +1,14 @@
 <?php
 
 use App\Models\Author;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\TestCase;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class AuthorTest extends TestCase
 {
-    use DatabaseTransactions;
+    // use DatabaseTransactions;
+    use DatabaseMigrations;
 
     protected function setUp(): void
     {
@@ -54,7 +55,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors [GET]
      */
-    public function test_should_return15_authors(): void
+    public function test_should_return_15_authors(): void
     {
         $this->get('api/authors', []);
         $this->response->assertJsonCount(15);
@@ -96,7 +97,8 @@ class AuthorTest extends TestCase
      */
     public function test_should_create_author(): void
     {
-        $this->post("/api/authors", Author::factory()->definition(), []);
+        $author = Author::factory()->definition();
+        $this->post("/api/authors", $author, []);
         $this->seeStatusCode(201);
         $this->seeJsonStructure([
             'id',
@@ -108,6 +110,89 @@ class AuthorTest extends TestCase
             'latest_article_published',
             'created_at',
             'updated_at',
+        ]);
+        $this->seeJsonContains([
+            'name' => $author['name'],
+            'email' => $author['email'],
+            'github' => $author['github'],
+            'twitter' => $author['twitter'],
+            'location' => $author['location'],
+            'latest_article_published' => $author['latest_article_published'],
+
+        ]);
+    }
+
+    /**
+     * /api/authors [POST]
+     */
+    public function test_should_return_validation_error_when_request_is_empty()
+    {
+        $this->post("/api/authors", [], []);
+        $this->seeStatusCode(422);
+        $this->seeJsonStructure([
+            'name',
+            'email',
+            'github',
+            'twitter',
+            'location',
+            'latest_article_published',
+        ]);
+        $this->seeJsonContains([
+            'name' => ["The name field is required."]
+        ]);
+    }
+
+    /**
+     * /api/authors [POST]
+     */
+    public function test_should_return_validation_error_when_request_has_only_1_field()
+    {
+        $this->post("/api/authors", ['name' => 'Zbigniew Json'], []);
+        $this->seeStatusCode(422);
+        $this->seeJsonStructure([
+            'email',
+            'github',
+            'twitter',
+            'location',
+            'latest_article_published',
+        ]);
+        $this->seeJsonContains([
+            'email' => ["The email field is required."]
+        ]);
+    }
+
+    /**
+     * /api/authors [POST]
+     */
+    public function test_should_return_validation_error_when_field_does_not_exist()
+    {
+        $this->post("/api/authors", ['non_exist' => true], []);
+        $this->seeStatusCode(422);
+        $this->seeJsonStructure([
+            'name',
+            'email',
+            'github',
+            'twitter',
+            'location',
+            'latest_article_published',
+        ]);
+        $this->seeJsonContains([
+            'name' => ["The name field is required."]
+        ]);
+    }
+
+    /**
+     * /api/authors [POST]
+     */
+    public function test_should_return_error_when_author_exist()
+    {
+        $author = Author::factory()->definition();
+        $this->post("/api/authors", $author, []);
+        $this->post("/api/authors", $author, []);
+
+        $this->seeStatusCode(422);
+        $this->seeJsonContains([
+            'email' => ["The email has already been taken."]
         ]);
     }
 
