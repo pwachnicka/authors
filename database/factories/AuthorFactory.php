@@ -31,8 +31,8 @@ class AuthorFactory extends Factory
         ];
     }
 
-    public function createRandomAuthor(int $id)
+    public function createRandomAuthor(int $id = null)
     {
-        $this->createOne(array_merge(['id' => $id], $this->definition()));
+        $this->createOne(['id' => $id, ...$this->definition()]);
     }
 }
