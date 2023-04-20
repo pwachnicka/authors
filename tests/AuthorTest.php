@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\Author;
+use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Laravel\Lumen\Testing\DatabaseTransactions;
-use Illuminate\Testing\TestResponse;
 
 class AuthorTest extends TestCase
 {
@@ -28,12 +28,11 @@ class AuthorTest extends TestCase
         Author::factory()->createRandomAuthor(14);
         Author::factory()->createRandomAuthor(15);
     }
-    //z czasem zamiast setUp używać dataSeeder
 
     /**
      * /api/authors [GET]
      */
-    public function testShouldReturnAllAuthors(): void
+    public function test_should_return_all_authors(): void
     {
         $this->get("/api/authors", []);
         $this->seeStatusCode(200);
@@ -55,17 +54,17 @@ class AuthorTest extends TestCase
     /**
      * /api/authors [GET]
      */
-    public function testShouldReturn15Authors(): void
+    public function test_should_return15_authors(): void
     {
         $this->get('api/authors', []);
-        // $this->assertJsonCount();
-        // $this->assertJsonCount(15, $key = null);
+        $this->response->assertJsonCount(15);
+        $this->seeStatusCode(200);
     }
 
     /**
      * /api/authors/id [GET]
      */
-    public function testShouldReturnAuthor(): void
+    public function test_should_return_author(): void
     {
         $this->get("/api/authors/2", []);
         $this->seeStatusCode(200);
@@ -85,7 +84,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [GET]
      */
-    public function testShouldNotReturnAuthor(): void
+    public function test_should_not_return_author(): void
     {
         $this->get("/api/authors/9999", []);
         $this->seeStatusCode(404);
@@ -95,7 +94,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors [POST]
      */
-    public function testShouldCreateAuthor(): void
+    public function test_should_create_author(): void
     {
         $this->post("/api/authors", Author::factory()->definition(), []);
         $this->seeStatusCode(201);
@@ -115,7 +114,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [PUT]
      */
-    public function testShouldUpdateAuthor(): void
+    public function test_should_update_author(): void
     {
         $parameters = [
             'latest_article_published' => 'Testing PUT method with feature test'
@@ -139,7 +138,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [DELETE]
      */
-    public function testShouldDeleteAuthor(): void
+    public function test_should_delete_author(): void
     {
         $this->delete('api/authors/11', [], []);
         $this->seeStatusCode(200);
