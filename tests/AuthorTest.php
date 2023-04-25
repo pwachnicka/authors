@@ -125,7 +125,8 @@ class AuthorTest extends TestCase
      */
     public function test_should_return_validation_error_when_request_is_empty()
     {
-        $this->post("/api/authors", [], []);
+        $dataToPost = [];
+        $this->post("/api/authors", $dataToPost, []);
         $this->seeStatusCode(422);
         $this->seeJsonStructure([
             'name',
