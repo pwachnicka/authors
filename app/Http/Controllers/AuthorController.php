@@ -39,6 +39,15 @@ class AuthorController extends Controller
 
     public function update(int $id, Request $request)
     {
+        $this->validate($request, [
+            'name' => 'max:255',
+            'email' => 'email|unique:authors|max:255',
+            'github' => 'max:255',
+            'twitter' => 'max:255',
+            'location' => 'max:255',
+            'latest_article_published' => 'max:255'
+        ]);
+
         $author = Author::findOrFail($id);
         $author->update($request->all());
 
