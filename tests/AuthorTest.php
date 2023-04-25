@@ -1,13 +1,11 @@
 <?php
 
 use App\Models\Author;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
 class AuthorTest extends TestCase
 {
-    // use DatabaseTransactions;
     use DatabaseMigrations;
 
     protected function setUp(): void
@@ -199,13 +197,79 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [PUT]
      */
-    public function test_should_update_author(): void
+    public function test_should_update_author_with_one_field(): void
     {
-        $parameters = [
-            'latest_article_published' => 'Testing PUT method with feature test'
+        $updatedValue = [
+            'latest_article_published' => "Testing PUT method with feature test"
         ];
 
-        $this->put('/api/authors/4', $parameters, []);
+        $this->put('/api/authors/4', $updatedValue, []);
+        $this->seeStatusCode(200);
+        $this->seeJsonStructure([
+            'id',
+            'name',
+            'email',
+            'github',
+            'twitter',
+            'location',
+            'latest_article_published',
+            'created_at',
+            'updated_at',
+        ]);
+        $this->seeJsonContains($updatedValue);
+    }
+
+    /**
+     * /api/authors/id [PUT]
+     */
+    public function test_should_update_author_with_few_fields()
+    {
+        $updatedValue = [
+            'name' => 'Jane Kowalsky',
+            'location' => 'Madrit',
+            'latest_article_published' => 'How to learn React?'
+        ];
+
+        $this->put('/api/authors/5', $updatedValue, []);
+        $this->seeStatusCode(200);
+        $this->seeJsonStructure([
+            'id',
+            'name',
+            'email',
+            'github',
+            'twitter',
+            'location',
+            'latest_article_published',
+            'created_at',
+            'updated_at',
+        ]);
+        $this->seeJsonContains($updatedValue);
+    }
+
+    /**
+     * /api/authors/id [PUT]
+     */
+    public function test_should_return_error_when_edited_author_does_not_exist()
+    {
+        $updatedValue = [
+            'name' => 'Jane Kowalsky'
+        ];
+
+        $this->put('/api/authors/99999', $updatedValue, []);
+        $this->seeStatusCode(404);
+    }
+
+    /**
+     * /api/authors/id [PUT]
+     */
+    public function test_should_return_error_when_author_exist_field_not_exits()
+    {
+        $updatedValue = [
+            'name' => 'Jane Kowalsky',
+            'serial_number' => '456ABC123'
+        ];
+
+        $this->put("/api/authors/1", $updatedValue, []);
         $this->seeStatusCode(200);
         $this->seeJsonStructure([
             'id',
@@ -228,5 +292,14 @@ class AuthorTest extends TestCase
         $this->delete('api/authors/11', [], []);
         $this->seeStatusCode(200);
         $this->seeJsonEquals(['message' => 'Delete succesfully']);
+    }
+
+    /**
+     * /api/authors/id [DELETE]
+     */
+    public function test_should_return_error_when_deleted_author_does_not_exist()
+    {
+        $this->delete('/api/authors/2222', [], []);
+        $this->seeStatusCode(404);
     }
 }
