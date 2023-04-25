@@ -145,7 +145,8 @@ class AuthorTest extends TestCase
      */
     public function test_should_return_validation_error_when_request_has_only_1_field()
     {
-        $this->post("/api/authors", ['name' => 'Zbigniew Json'], []);
+        $author = ['name' => 'Zbigniew Json'];
+        $this->post("/api/authors", $author, []);
         $this->seeStatusCode(422);
         $this->seeJsonStructure([
             'email',
@@ -164,7 +165,8 @@ class AuthorTest extends TestCase
      */
     public function test_should_return_validation_error_when_field_does_not_exist()
     {
-        $this->post("/api/authors", ['non_exist' => true], []);
+        $dataToPost = ['non_exist' => true];
+        $this->post("/api/authors", $dataToPost, []);
         $this->seeStatusCode(422);
         $this->seeJsonStructure([
             'name',
@@ -262,7 +264,7 @@ class AuthorTest extends TestCase
     /**
      * /api/authors/id [PUT]
      */
-    public function test_should_return_error_when_author_exist_field_not_exits()
+    public function test_should_return_author_when_author_exist_field_not_exits()
     {
         $updatedValue = [
             'name' => 'Jane Kowalsky',
